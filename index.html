@@ -15,7 +15,6 @@
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
 
   body {
@@ -27,7 +26,15 @@
     cursor: crosshair;
   }
 
-  /* HERO */
+  .noise {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  }
+
   .hero {
     height: 100vh;
     display: grid;
@@ -41,15 +48,6 @@
     position: absolute;
     inset: 0;
     background: radial-gradient(ellipse 60% 60% at 50% 60%, #1c1410 0%, transparent 70%);
-  }
-
-  .noise {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 999;
-    opacity: 0.035;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   }
 
   .phone-wrap {
@@ -66,13 +64,14 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .phone {
+  #hero-phone {
     width: 140px;
     height: 285px;
     background: linear-gradient(145deg, #2a2a2a 0%, #0a0a0a 40%, #1a1510 70%, #0d0c0a 100%);
     border-radius: 32px;
     border: 1px solid #2e2a24;
     position: relative;
+    transition: background 0.8s ease, border-color 0.8s ease, box-shadow 0.8s ease;
     box-shadow:
       0 0 0 1px #111,
       0 60px 120px rgba(0,0,0,0.9),
@@ -134,34 +133,28 @@
 
   .phone-button {
     position: absolute;
-    right: -2px;
-    top: 80px;
-    width: 2px;
-    height: 45px;
+    right: -2px; top: 80px;
+    width: 2px; height: 45px;
     background: linear-gradient(to bottom, #1a1a1a, #2a2520, #1a1a1a);
     border-radius: 1px;
   }
 
   .phone-button-vol {
     position: absolute;
-    left: -2px;
-    top: 70px;
-    width: 2px;
-    height: 30px;
-    background: linear-gradient(to bottom, #1a1a1a, #2a2520, #1a1a1a);
-    border-radius: 1px;
-  }
-  .phone-button-vol2 {
-    position: absolute;
-    left: -2px;
-    top: 110px;
-    width: 2px;
-    height: 30px;
+    left: -2px; top: 70px;
+    width: 2px; height: 30px;
     background: linear-gradient(to bottom, #1a1a1a, #2a2520, #1a1a1a);
     border-radius: 1px;
   }
 
-  /* reflection on floor */
+  .phone-button-vol2 {
+    position: absolute;
+    left: -2px; top: 110px;
+    width: 2px; height: 30px;
+    background: linear-gradient(to bottom, #1a1a1a, #2a2520, #1a1a1a);
+    border-radius: 1px;
+  }
+
   .phone-reflection {
     width: 140px;
     height: 50px;
@@ -170,6 +163,23 @@
     transform: scaleY(-1);
     margin-top: 2px;
     border-radius: 0 0 50% 50%;
+  }
+
+  .color-label {
+    margin-top: 1.2rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--gold);
+    letter-spacing: 0.3em;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .color-label.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .hero-title {
@@ -229,7 +239,6 @@
     50% { opacity: 1; transform: scaleY(1); }
   }
 
-  /* SECTIONS */
   section {
     min-height: 100vh;
     display: flex;
@@ -246,17 +255,11 @@
     opacity: 0.6;
   }
 
-  /* SECTION 1: Form */
-  .s-form {
-    flex-direction: column;
-    justify-content: center;
-  }
-
+  .s-form { flex-direction: column; justify-content: center; }
   .s-form::before {
     content: '01';
     position: absolute;
-    top: 8vw;
-    right: 8vw;
+    top: 8vw; right: 8vw;
     font-family: 'Bebas Neue', sans-serif;
     font-size: 20vw;
     color: var(--dim);
@@ -268,8 +271,7 @@
   .s-material::before {
     content: '02';
     position: absolute;
-    top: 8vw;
-    left: 8vw;
+    top: 8vw; left: 8vw;
     font-family: 'Bebas Neue', sans-serif;
     font-size: 20vw;
     color: var(--dim);
@@ -281,8 +283,7 @@
   .s-color::before {
     content: '03';
     position: absolute;
-    bottom: 8vw;
-    left: 8vw;
+    bottom: 8vw; left: 8vw;
     font-family: 'Bebas Neue', sans-serif;
     font-size: 20vw;
     color: var(--dim);
@@ -310,10 +311,7 @@
     max-width: 600px;
   }
 
-  h2 em {
-    font-style: italic;
-    color: var(--gold);
-  }
+  h2 em { font-style: italic; color: var(--gold); }
 
   p.body {
     font-size: clamp(0.8rem, 1.5vw, 1rem);
@@ -324,12 +322,8 @@
     letter-spacing: 0.05em;
   }
 
-  /* MATERIAL SWATCHES */
-  .swatch-grid {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
+  /* SWATCHES */
+  .swatch-grid { display: flex; gap: 1rem; flex-wrap: wrap; }
 
   .swatch {
     width: 80px;
@@ -337,17 +331,20 @@
     border-radius: 12px;
     position: relative;
     overflow: hidden;
-    transition: transform 0.3s ease;
+    cursor: pointer;
+    transition: transform 0.3s ease, outline-color 0.3s ease;
+    outline: 1px solid transparent;
+    outline-offset: 4px;
   }
 
   .swatch:hover { transform: scale(1.08); }
+  .swatch.active { outline: 1px solid var(--gold); }
 
   .swatch::after {
     content: attr(data-label);
     position: absolute;
     bottom: 6px;
-    left: 0;
-    right: 0;
+    left: 0; right: 0;
     text-align: center;
     font-size: 0.55rem;
     letter-spacing: 0.1em;
@@ -355,10 +352,10 @@
     font-family: 'Montserrat', sans-serif;
   }
 
-  .swatch-obsidian { background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 50%, #2a2520 100%); }
-  .swatch-dusk     { background: linear-gradient(135deg, #1a1520 0%, #0d0a14 50%, #251a30 100%); }
-  .swatch-sand     { background: linear-gradient(135deg, #2a2218 0%, #1a1610 50%, #352a1e 100%); }
-  .swatch-ash      { background: linear-gradient(135deg, #1e1e1e 0%, #151515 50%, #262626 100%); }
+  .swatch-obsidian { background: linear-gradient(145deg, #2a2a2a 0%, #0a0a0a 40%, #1a1510 70%, #0d0c0a 100%); }
+  .swatch-dusk     { background: linear-gradient(145deg, #221830 0%, #0d0a18 40%, #1a1028 70%, #100c1a 100%); }
+  .swatch-sand     { background: linear-gradient(145deg, #352a1e 0%, #1a1508 40%, #2a1e10 70%, #180f06 100%); }
+  .swatch-ash      { background: linear-gradient(145deg, #2a2a2a 0%, #141414 40%, #1e1e1e 70%, #0a0a0a 100%); }
 
   /* COLOR STRIPS */
   .color-story {
@@ -404,7 +401,6 @@
   .c3 { background: linear-gradient(to bottom, #18150e, #0c0a06); }
   .c4 { background: linear-gradient(to bottom, #141414, #0a0a0a); }
 
-  /* FINAL */
   .price-tag {
     font-family: 'Bebas Neue', sans-serif;
     font-size: clamp(4rem, 12vw, 10rem);
@@ -414,9 +410,7 @@
     margin: 2rem 0;
   }
 
-  .price-tag span {
-    color: var(--gold);
-  }
+  .price-tag span { color: var(--gold); }
 
   .cta-row {
     display: flex;
@@ -439,49 +433,26 @@
     text-decoration: none;
   }
 
-  .btn-primary {
-    background: var(--gold);
-    color: var(--black);
-    border: 1px solid var(--gold);
-  }
-  .btn-primary:hover {
-    background: transparent;
-    color: var(--gold);
-  }
+  .btn-primary { background: var(--gold); color: var(--black); border: 1px solid var(--gold); }
+  .btn-primary:hover { background: transparent; color: var(--gold); }
+  .btn-secondary { background: transparent; color: var(--white); border: 1px solid #333; }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
 
-  .btn-secondary {
-    background: transparent;
-    color: var(--white);
-    border: 1px solid #333;
-  }
-  .btn-secondary:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-  }
-
-  /* REVEAL on scroll */
   .reveal {
     opacity: 0;
     transform: translateY(30px);
     transition: opacity 0.8s ease, transform 0.8s ease;
   }
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
 
-  /* NAV */
   nav {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     z-index: 100;
     padding: 2rem 4rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    mix-blend-mode: normal;
     background: linear-gradient(to bottom, rgba(5,5,5,0.9), transparent);
   }
 
@@ -492,11 +463,7 @@
     color: var(--white);
   }
 
-  .nav-links {
-    display: flex;
-    gap: 3rem;
-    list-style: none;
-  }
+  .nav-links { display: flex; gap: 3rem; list-style: none; }
 
   .nav-links a {
     font-size: 0.6rem;
@@ -509,12 +476,32 @@
 
   .nav-links a:hover { color: var(--gold); }
 
-  /* HORIZONTAL RULE */
   .hr {
     width: 100%;
     height: 1px;
     background: linear-gradient(to right, transparent, #222, transparent);
     margin: 0;
+  }
+
+  /* small phone in section 2 */
+  #small-phone {
+    width: 90px;
+    height: 185px;
+    background: linear-gradient(145deg, #2a2a2a 0%, #0a0a0a 40%, #1a1510 70%, #0d0c0a 100%);
+    transform: rotate(-8deg);
+    border-radius: 22px;
+    border: 1px solid #2e2a24;
+    position: relative;
+    transition: background 0.8s ease, border-color 0.8s ease;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+  }
+
+  .small-screen {
+    position: absolute;
+    inset: 6px;
+    border-radius: 17px;
+    background: linear-gradient(160deg, #0a0806 0%, #08070a 50%, #0c0906 100%);
+    overflow: hidden;
   }
 
   @media (max-width: 768px) {
@@ -523,7 +510,117 @@
     section { padding: 15vw 6vw; }
     .s-material { flex-direction: column; }
     .color-story { max-width: 100%; }
+    #small-phone { display: none; }
   }
+
+  /* TESTIMONIAL */
+  .s-testimonial {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8vw;
+    background: #060504;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .s-testimonial::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 50% 70% at 30% 50%, #1a1208 0%, transparent 60%);
+  }
+
+  .testimonial-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 820px;
+    width: 100%;
+    position: relative;
+  }
+
+  .quote-mark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10rem;
+    color: var(--gold);
+    opacity: 0.15;
+    line-height: 0.6;
+    margin-bottom: 1rem;
+    user-select: none;
+  }
+
+  .testimonial-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+    line-height: 1.35;
+    color: var(--white);
+    max-width: 700px;
+    border: none;
+    padding: 0;
+    margin: 0 0 3rem 0;
+  }
+
+  .testimonial-attribution {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .testimonial-photo-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .testimonial-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    filter: grayscale(20%) contrast(1.05);
+  }
+
+  .photo-ring {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px solid var(--gold);
+    opacity: 0.5;
+  }
+
+  .testimonial-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--white);
+    letter-spacing: 0.05em;
+  }
+
+  .testimonial-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  .testimonial-owns {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.55rem;
+    font-weight: 200;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-top: 0.5rem;
+    opacity: 0.8;
+  }
+
 </style>
 </head>
 <body>
@@ -543,7 +640,7 @@
 <!-- HERO -->
 <div class="hero">
   <div class="phone-wrap">
-    <div class="phone">
+    <div id="hero-phone">
       <div class="phone-screen">
         <div class="screen-glow"></div>
       </div>
@@ -553,6 +650,7 @@
       <div class="phone-button-vol2"></div>
     </div>
     <div class="phone-reflection"></div>
+    <div class="color-label" id="color-label">Obsidian</div>
   </div>
 
   <div class="hero-title">
@@ -585,22 +683,22 @@
     <div class="section-label">II — Material</div>
     <h2>Cold-forged volcanic glass,<br><em>set in aerospace alloy.</em></h2>
     <div class="divider"></div>
-    <p class="body">The name is not metaphor. The rear panel is formed from a proprietary crystalline glass process that renders the surface with the deep, non-reflective stillness of volcanic stone. It doesn't gleam. It absorbs light. It invites touch. Set against a frame milled from a single billet of 7000-series aluminium, this is not a manufactured object — it is a found object, refined.</p>
-    <div class="swatch-grid" style="margin-top:2rem;">
-      <div class="swatch swatch-obsidian" data-label="Obsidian"></div>
-      <div class="swatch swatch-dusk" data-label="Dusk"></div>
-      <div class="swatch swatch-sand" data-label="Sand"></div>
-      <div class="swatch swatch-ash" data-label="Ash"></div>
+    <p class="body">The name is not metaphor. The rear panel is formed from a proprietary crystalline glass process that renders the surface with the deep, non-reflective stillness of volcanic stone. It doesn't gleam. It absorbs light. It invites touch.</p>
+    <p class="body" style="margin-top:0.5rem; color:#5a5048; font-size:0.65rem; letter-spacing:0.3em; text-transform:uppercase;">Select your finish:</p>
+    <div class="swatch-grid" style="margin-top:1rem;">
+      <div class="swatch swatch-obsidian active" data-label="Obsidian" data-color="obsidian"></div>
+      <div class="swatch swatch-dusk"     data-label="Dusk"     data-color="dusk"></div>
+      <div class="swatch swatch-sand"     data-label="Sand"     data-color="sand"></div>
+      <div class="swatch swatch-ash"      data-label="Ash"      data-color="ash"></div>
     </div>
   </div>
 
-  <!-- second phone mockup, rotated -->
-  <div class="reveal" style="flex-shrink:0; margin-left: 4rem;">
-    <div class="phone" style="width:90px; height:185px; transform: rotate(-8deg); border-radius:22px;">
-      <div class="phone-screen" style="border-radius:17px;">
-        <div class="screen-glow"></div>
+  <div class="reveal" style="flex-shrink:0; margin-left:4rem;">
+    <div id="small-phone">
+      <div class="small-screen">
+        <div class="screen-glow" style="width:35px;height:35px;top:25%;"></div>
       </div>
-      <div class="phone-notch" style="width:26px; height:3px; top:8px;"></div>
+      <div class="phone-notch" style="width:26px;height:3px;top:8px;"></div>
     </div>
   </div>
 </section>
@@ -626,6 +724,29 @@
 
 <div class="hr"></div>
 
+<div class="hr"></div>
+
+<!-- SECTION: Testimonial -->
+<section class="s-testimonial" id="testimonial">
+  <div class="reveal testimonial-inner">
+    <div class="quote-mark">&ldquo;</div>
+    <blockquote class="testimonial-quote">
+      I own four of them. Different finishes for different moods. My friends think I am obsessed — they are not wrong.
+    </blockquote>
+    <div class="testimonial-attribution">
+      <div class="testimonial-photo-wrap">
+        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAJQAlAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAFBgQHAAEDAgj/xAA9EAACAQMDAgQDBgUBBwUAAAABAgMABBEFEiEGMRNBUWEUIoEHIzJxkaEVQlKx0cEWJDNTcvDxJmKywuL/xAAZAQADAQEBAAAAAAAAAAAAAAACAwQBAAX/xAAnEQACAgICAQMDBQAAAAAAAAAAAQIRAyESMUEiUWEEEzIUM0Rxgf/aAAwDAQACEQMRAD8Aq9JM/wApNbMgXupq3Yun+kNfgZtLjaK7I7M5yn0NDG+z2/ilkW3e22nhZGbkj3AFUvAl2TLM2ysZpQ8Zwp/SvJmCBdnzHHarXs/s/vrV/vp7SSJvxDn/ABUKb7NJ5LiWUajbRRZyqKhOBSeA3mVt48uP+E36Vrx5f+U36U+2GmafYfHR6gyXDKpVH24APtS1IpIcArjy48qdL6dJJ2JX1FtoCi4kJ4SptpMQhLjDH8IrLRRuOdvetzzLD86qCwB28UjLBQKMU+WyNeTTGXYDwfKiOj6ddXjKTlkB5zUbS7Zrq6Te2d/OM9hVoabFb2VoqoigleTipp5FHRVjxcistS02eykMjKQc4FDvEeKIovLP+I1Z+qxW96pV1B+lBP4Hah8sgwe9YsvuHLA70IJ3p+MkelTY7ppIljk5KngmmTWdLthBlEAIFKIwjbT/AC8UcZchU4OD2EIvvkKMcEHHNTtK6e/iFwIpL6K2UnvIM0MzsYSLnnGTU6G4BAEgzTINJ7Ezi3HQ3RfZraM4D9QwEH/lxf8A6qfD9lulPHvXXHdduThB/mkpLgRENEzg4PIJrS6vcwkrFPKqnjG41dCOJo86cs8dDYnQHTrDP+0X0wtZSQZxngH9a1R8MfsBzyhfS767tbrfazMj7cZFGH1/WgRm/l/al+M+G+4V0a5Zv5hSnfkqVLoNjWNbuCFa9mI/6qmWmo6jpl6huWlmGD8pbP7V56W6dvNYiN0bhYIB+BiMlj7VA1+4vdM1Yx3LqXj/AAsD3FKjkjyOe1QT1PqqGXTZrN7ALM+fxD96TWf5Tg+XNF9x1VxNIoBHHA715j0ob3D9vIVT9qcnyXkGPGKoBW3gwxmSQjcT2NRZXE7SOPTOfIV6vYisnhbTgk4Nc2ZUiEWRgr+/evPyXy2W46UdBvpBPFuycZ2qoqwhbt4YL5C+XFJHQ0LrZ3FyigkHgN24qbfa3cbiyXbEA8f0ke1STVyL8b4wDkyjcee1cZE96haZfPfrtJBbGeKy+1BLPiTBx74pdDrVWcdTTMTeeaQryIRXTfnTiNWS8RhHFnHkGyaU9UO66Zl49R6U/HaZLnaa0aWTaCc8EYrrayjJ9SK4d0CHn0rzbnbKufJvKnMnCdokk0Z2qSc4AxzXS70rUYEWSaxukjf8LtCwDftRXSJprC7iktUFwZZUGE7huOfzxV3aHrcd14sd3bPZ3KLuaG4A5X+oEcYp+OVIjzdnzotjdOMrazkeojNbr6jjxKgeDw2RhkEAYrKdzYrj8lR2f2Z6zNNIGktkVOMux5/LFEV+ye7kUiTUrRMjyRjj+1WLHDChYGZ2zzXQ+BjG9h+tZujf8K41DpDVel9GkntdbSREHMSxbePY5NI+siOZY52cs5HzE1cnWMdm+gXKyyvGu3O7FUZq0kfwyKj+eKzgjYtXQR0ASyYhgUE7sAmmC5tRpVxFcSyrMwUnHkGx50o6S7wSRsJD2orPqECJIZt0xC55OAPT/sVe8ihjpsVwlOfwLOqTFnllIGScgr2OaCSFtwxyKn3zk5GMDnHHvUFvlBPkPOvEbtnpln9J6TFNoSRzlh4gydpx3odqfTKJMVjgQ88EsQaYdIlFpolpxg+Cuf0ofc6i81wVjIyO/tU3J3o9KOOLjs9dO6HJYQzzyLzswoGaXtVga8mZuWIPCjtTqdShFl4MczsxAzvGMetLEUoWVgAr8/hB5/WuV3ZrgqoAJY3okBgdhtPAdSMD86ia3CyTK8kYVmOGwcinv7t4dycUpdTIFjYehyKOMm5CMuJRgAWLEnb3HIrQcOFcDDqeRXOOQ4Ug4Ir157sYPnTyMO6fcNHEMttO7crea4/8U733UFxqBt2EZjnjslMrk4Lbs/scf3qtrSXaPn7dxTs0N++npvikm+DQp4uflKkA4558+1dG7E5Yod+geoJP9nljnclopWQZPl5f3rKVdLsdc0+18KGyQKx34m/FyB/pisp3In+0/cedE+0TS9RvPhpY5INxwhYcGnTahUEAEGvnLp+0+MvwBIsYRd5J4q8+mb1pbJVmJZlO3PtT+1YP4ypnDr6P/wBKX+1eRGSKoXTILO6gZriTfKO67uFr6WvTaTW8iXSo8OPmD9iPeluHWOlxN8DaR2O8nbsRVyaVkzvHG+NhxxKT7KTwtuy7WBX1BzXrWlhjAFuwlVQCx2+fvTZrXT+nat1kLPTvuYNhebw+wI8hQvqXRY9Eke3WZXWQY3uO1HlzKeFM3FrLViddjJVmbOfeoMw2c5+Unmpc8TLON2R559aizr90xbz4xUaL2WlOC+lReE2D4QK4/IUvC8EFylpFbO8z85Hn71M6cvvjdHt9pyyL4b+xFTbnTVnRJRvWaIfIynB+lTLUmmXx9UVRyuIr3wMy6dLgHbvXnmhjXcduD40ckQz+IrijY1fVYIVi+IRtrbiJYiTny7UKvTeaofDuJF8In5gse3P60Ve4UlLyjdrc7m2RncrDOaB9SkmLJPnTPEkFjalYlCjG1aUOqJ1AWIH5iayG56E5n6KAluuRz61IQZU5rlag+F2867rjHHbHJqkhOtqgkeNG4RmwfUDzq3OmoFuumEKS4ugwkGRneUPy7h35AFU5FLhuPpT70X1M0F1BaXhjkgdggZ+DGPYjyrYSp7FZ4OUdeC7rdWaFDcqviEDOBxWVItyvgpkE8cVlPtkmj5iWZoW3xsVI8xV9dEy/E6PFKf51BqiJLC8kj+6t5HPsuavrpSzTSun7GOW5jZ/BXdjyJGcU7HqLRmRrkqJHUELvot5gnPhNjFfOFs8sN0JopWR0J+cHmvpXVrqzOm3CvPw0ZHFUHYaP8Rq4huI3S3LnuMA11WqA5RjIeegxarpX8Ry8t1OSrsfLntS/1hcyNelbplVR5kZ49KefCs9E0LwbVFVFX5dvmarDWnu7iR1uFcyHB+YcgeWaRLisbTHYW3lTQCnCmYYYtuPb0qLdYkLMpwo7A0WuYTCoMKZOwEkDP1oRFDcTsfCieUk84GamiehImdM6jJp98qjmKdgrrnz8iKs+3uYZYVzyw8qrO20i7QrcTQmNImUncMeYp0RSvAyPypWWrRR9PJpMn3Sx5O1iPQZqC7Iqkue1cJPEU5BeodwZCOWJ/OllLnrSPN7egBnzwBhRSZqcrXF1uf6Ux3MZkB9KB3US/E+/lmnY1TJM1s8wIdu3B+btx3rpKiJAVJO8jP5YqfJtNorIu1l/v7UMd5HUgsfm9aK7FNUjUAyM4ojaPtB2D7xWBGfY0NhmMXcBh6HtUyznUXCuzt4ee4Pb6VzRiLT0fqqSTTLfxZirou3H5GspIi8WzTYl5Eysd/APnWUxZGhDwRLYbqOxtQwht4NhHC4AodN1bFHGWSOIHzqr5Z3Kf8Rsio5uZNhTcaP78hH6b5HfUPtDlAeJEiPphaAv13qRcMIouD5iluZdzZrkF8qz70wl9PDyN7faJfbdskMeSOPl7e9S9NtdR6pl+Mt7RAoGJLhhtQkccnzI/Kh32edHnqfVHe6Zk0+2AMxXhnY9kB8s9yfIVeQhtLCwS3hiihtIRsjjUBVA8gKycpSWxkMccbtFdp0vYwlGv40u5Rj5QuFB+vepR0+OOYrbxJGsY5CLimZ40kuMbRtj+8c++KiWEXjRXDvzvNL4jbAHW9qsPTc7oOAyc/WgMLCSCCUn8SDJ96ZevpI16NIdsPK6BB5kgj/FJmk3H+7mB8gpggH0IzSskdFGCVdhGVAaHXSYFTQ5K1EuMlgDSkVMhFBsNA7sL8aQE3YA4H50x3BSOIk8Y70D0+2/iN5Ac83V0I8dsKO9Nx2T5nR2FqGtwQxDAZAx60LmiEbklfmznHp7VZ17ocDFTApjVVxuX09KS+obWOO5jt4BmXP7UaVCrTALwLuViriJ+Qy84rbxxwOnhSeIp5yAQaedH0OM2cUbrzgZoH1VpElhNDIF/wB35BbHY+hogaByTMVy2857c1lPOkaZ0/e6fFPesIpWH4VJAx61lDQVlcfFS/1Vozue5rltb0rNppwg9GVj515aRlBbPArW01gXMiL3LMAB5muXZx9C9CafHoXSOnxgL49wqzTv3LM3P7DA+lL32ra1GtrDpSk+Kx8d9pxgDOP3op0le/EaPFayE77E4b/pzx/iq06u1i81bUbgXZXw4pGVAFHyAcDnuaoxYryU10JyZEoaHz7P9VuL7pS6e8dpJYZTArt3IKgjPrjJpmsprfwRDFLG0mAWTeN36VSlrr97YaJJpVliKOWXxpJRndyoGB6Diiv2a2Udx1UrTB/EiiaQZPO7yz7c1k8OnPwdHJtR8j11JpJ13plRC2J7KR3UHs2M5H1H9qq+2uS11Z3SDEdxDtx67f8Av2q59OjaWK8tNxVmZvmA9apcCC1is7NZy1xazOjgrwDnBA59s1I1aZVF1JDAwIAYZ5FcwrOc+ldo3X5EJGSOMV22bMnFRno0ANZZVCJJkLJIFbb3AzTToPTLT3cOok+HZQZ8CPaQzn+r2HH1peu7Zr7UYY0KhIsSyBuOM4FWVoV0tz09YyhfDIiCFCMEEcdvzFVQVRIssvUzjsJV1x+AYzVd65ZyWmsNd7SwZwwz2PtVnvEIrU7e5J+tJPUMsktxJptpEr3DqM7h2B9v9aJoXFhjQpobu1Wa3O4EY7dj6VG1m40+8uJdDmDfFNEWG5eM4yMH14qRYQR9O6IJbjJWFMsF7s1VvPdFL+TUrLx/DLkRtMuSpIPBI9MnFHGNo4HW1xH4KmWASMRnPNZXeyspbiEtDE7Kp2/KOBwKyt4I6wfmtE1lZXCzRNe7VWa7gC9/EG38814NFOlIFueqNLgcZV7hQf71qdNGPotnQrJo7pbmGdV2gLcwsuc5Hkajy/Z7FPrMl7cXpktXk8UW6ptPrgtnt9KZbaJbMsu0DdyR70QjI8BADzjvRzzPk+IEMarZSXWNpDYdTX0FvGI4htMaqMDBHkPSn3oKG4tNGtzfL94SSinuqHsKKalpNnc3STXdpbzyp+B3jBK/kakhCq5PJPaunmcoKByx1NyOsh+F1LxCPkl7/wCtVZ1J009vq+pXpki8Dx2kTD4ZSx3YIP5/tVsXSrJDEGIyRnPoarXrbUIfHu7KeFviAoZH7gnHH5c5qdtrpFEUn5ONi/iRqw9KlMny58s9sV7vbIWBtpYRi1uoxJEP6TjlfpmiHT2mtqcxZwfhY+XI/mP9NSuDui9TShyEPXrS9+PEscbLGyfdsOA2PKrZ0ffHpNmjlsxxKME9zilLqO+iIv49PnVds/hyREcDawTGPr39KYv4nZadDbi7lZQ2FVVQsT74HlVMHcUQ5V6r9wrc5Eapkj3pe1pNK01DfaisYZjtBYZJx6DzolY63Yaqk1xZ3CyxwZ3gDBGPUHmqtvtYm17Vi93GrJIdsOFyYl8gOePImmC12EepZG1drCawdhZzIyKZMqocMQeD9KF6JpF7r93HpduwWCJt8zkZVD2Le5xwKadWW4srLp6yWBkxASVOMCQjHPvk02dNabb6LpqwxIC7/PNIBgyP61r0jbsm6ZZWWj2UdlZxhY0HmBlj6nPnWVvYz5ZzkmsobOPnysrKyiBNGmH7PYvG610pfSRmP0RjS/Th9k8YfrOGRvwwW0rk+nZf/tXHFw3i4bd6+deLWXCuD7EVLvoty4HYUGu51tIJ5ncoqREswXJGPag+DfB1v7tIEMjjcF5OPIV0E4lQNBIjR/1KQRVWaprepXp2kFYzkcDOfTNPHSgFj05GLuSP7x8IUXBJJwB+vaj4NLbNlrwH5ctbxnzHnVfdWWCXuuASblL2uVKjuVzwfpVkGLaBHtyAKU+p7drbUrGfwyflkTjb7evsTzQ0bFna0sf430JBHDta5hVXjJ8mHB/bNMOmWUNjpsdvEDtRfmb1PmaGdCQqNPTYxZd5APkR+VEr6R7XTZynGEbk+WKGvJjk+inls2u9eS4lysFxfNudW7EtnBpn600OS8mim0spGot3ilLPjA7g58qh6ba+I2lxLlg07ysxORkDyI/t3zTpeae91pF0kcvhSOhSJ8Zw3kcUVexzeykrYXUMzW9tJIskh8MhDjdzwKnaRa3NlrkIdXhkhcs+RgqoHP7UzaV09fS69bXOoWSwmCTdLOrjZNj8JA9cgU53eg2GqsHukbxANpeNsFl/pJ9K63RukyLYTjVOndNmuk8SaQqVaQcjB7/oKMxrwo8hUZ0iiuIba3RUihTCoo4AqS6F4nRX2FgQG9K4xdnoAnsp+grdeEXaMbpG9wTWVxtHz1WVlZRAGU4/Zmdl/qsy/jSwO0+mXX/FbrKxmx7Lmt5Gms1kc8lATj8qE3kayW8wcZ4IrdZXeTvDKis2f4ueMuxRNwAJ96sjRQHi6XhblMSy4/8Aco4/+RrKynZf3Qv4sf7G2MlpuaBddYFvYnapKzEjIz5edZWUiRkO2S+ioliiulUcCXI9sgH/AFqN1IT/AA2691Of1rKysf4s1fmhV0ZNmrwICdrIXIwAM47/AJ07XZKRxovAArVZRIyRwjAOSamwRrtzWVlaABgxbU7kn+UgD8sVOFZWVnuMXR6BIHFZWVlYCf/Z" alt="Jodie Cohen" class="testimonial-photo" />
+        <div class="photo-ring"></div>
+      </div>
+      <div class="testimonial-meta">
+        <div class="testimonial-name">Jodie Cohen</div>
+        <div class="testimonial-title">Creative Director &amp; Collector</div>
+        <div class="testimonial-owns">Owns: Obsidian · Dusk · Sand · Ash</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- SECTION 4: Acquire -->
 <section class="s-final" id="acquire">
   <div class="reveal">
@@ -641,16 +762,68 @@
 </section>
 
 <script>
+  const COLORS = {
+    obsidian: {
+      label: 'Obsidian',
+      bg: 'linear-gradient(145deg, #2a2a2a 0%, #0a0a0a 40%, #1a1510 70%, #0d0c0a 100%)',
+      border: '#2e2a24',
+    },
+    dusk: {
+      label: 'Dusk',
+      bg: 'linear-gradient(145deg, #221830 0%, #0d0a18 40%, #1a1028 70%, #100c1a 100%)',
+      border: '#2a1e3a',
+    },
+    sand: {
+      label: 'Sand',
+      bg: 'linear-gradient(145deg, #352a1e 0%, #1a1508 40%, #2a1e10 70%, #180f06 100%)',
+      border: '#3a2a18',
+    },
+    ash: {
+      label: 'Ash',
+      bg: 'linear-gradient(145deg, #262626 0%, #141414 40%, #1c1c1c 70%, #0a0a0a 100%)',
+      border: '#242424',
+    },
+  };
+
+  function applyColor(key) {
+    const c = COLORS[key];
+    if (!c) return;
+
+    // Update both phones
+    document.getElementById('hero-phone').style.background = c.bg;
+    document.getElementById('hero-phone').style.borderColor = c.border;
+    document.getElementById('small-phone').style.background = c.bg;
+    document.getElementById('small-phone').style.borderColor = c.border;
+
+    // Show label
+    const label = document.getElementById('color-label');
+    label.textContent = c.label;
+    label.classList.add('visible');
+
+    // Update active swatch
+    document.querySelectorAll('.swatch').forEach(s => {
+      s.classList.toggle('active', s.dataset.color === key);
+    });
+  }
+
+  // Swatch click — change color then scroll to hero so user sees it
+  document.querySelectorAll('.swatch').forEach(swatch => {
+    swatch.addEventListener('click', () => {
+      applyColor(swatch.dataset.color);
+      document.querySelector('.hero').scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
   // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((e, i) => {
       if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), i * 100);
+        setTimeout(() => e.target.classList.add('visible'), i * 120);
       }
     });
   }, { threshold: 0.15 });
-  reveals.forEach(r => observer.observe(r));
+
+  document.querySelectorAll('.reveal').forEach(r => observer.observe(r));
 </script>
 </body>
 </html>
