@@ -1,13 +1,656 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Simple Pong Game</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OBSIDIAN — A Phone That Earns a Second Look</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Bebas+Neue&family=Montserrat:wght@200;300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050505;
+    --white: #f5f0eb;
+    --gold: #c8a97e;
+    --dim: #1a1a1a;
+    --muted: #555;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 200;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* HERO */
+  .hero {
+    height: 100vh;
+    display: grid;
+    place-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 50% 60%, #1c1410 0%, transparent 70%);
+  }
+
+  .noise {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  }
+
+  .phone-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: floatUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  @keyframes floatUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .phone {
+    width: 140px;
+    height: 285px;
+    background: linear-gradient(145deg, #2a2a2a 0%, #0a0a0a 40%, #1a1510 70%, #0d0c0a 100%);
+    border-radius: 32px;
+    border: 1px solid #2e2a24;
+    position: relative;
+    box-shadow:
+      0 0 0 1px #111,
+      0 60px 120px rgba(0,0,0,0.9),
+      0 0 80px rgba(200,169,126,0.06),
+      inset 0 1px 0 rgba(255,255,255,0.05),
+      inset 0 -1px 0 rgba(0,0,0,0.5);
+    animation: phoneGlow 4s ease-in-out infinite alternate;
+    animation-delay: 1.4s;
+  }
+
+  @keyframes phoneGlow {
+    from { box-shadow: 0 0 0 1px #111, 0 60px 120px rgba(0,0,0,0.9), 0 0 80px rgba(200,169,126,0.06), inset 0 1px 0 rgba(255,255,255,0.05); }
+    to   { box-shadow: 0 0 0 1px #1e1a14, 0 60px 120px rgba(0,0,0,0.9), 0 0 120px rgba(200,169,126,0.12), inset 0 1px 0 rgba(255,255,255,0.08); }
+  }
+
+  .phone-screen {
+    position: absolute;
+    inset: 8px;
+    border-radius: 25px;
+    background: linear-gradient(160deg, #0a0806 0%, #08070a 50%, #0c0906 100%);
+    overflow: hidden;
+  }
+
+  .phone-screen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(200,169,126,0.04) 0%, transparent 50%);
+  }
+
+  .screen-glow {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,169,126,0.15) 0%, transparent 70%);
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.3); }
+  }
+
+  .phone-notch {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 5px;
+    background: #050505;
+    border-radius: 3px;
+    z-index: 2;
+  }
+
+  .phone-button {
+    position: absolute;
+    right: -2px;
+    top: 80px;
+    width: 2px;
+    height: 45px;
+    background: linear-gradient(to bottom, #1a1a1a, #2a2520, #1a1a1a);
+    border-radius: 1px;
+  }
+
+  .phone-button-vol {
+    position: absolute;
+    left: -2px;
+    top: 70px;
+    width: 2px;
+    height: 30px;
+    background: linear-gradient(to bottom, #1a1a1a, #2a2520, #1a1a1a);
+    border-radius: 1px;
+  }
+  .phone-button-vol2 {
+    position: absolute;
+    left: -2px;
+    top: 110px;
+    width: 2px;
+    height: 30px;
+    background: linear-gradient(to bottom, #1a1a1a, #2a2520, #1a1a1a);
+    border-radius: 1px;
+  }
+
+  /* reflection on floor */
+  .phone-reflection {
+    width: 140px;
+    height: 50px;
+    background: linear-gradient(to bottom, rgba(200,169,126,0.04), transparent);
+    filter: blur(8px);
+    transform: scaleY(-1);
+    margin-top: 2px;
+    border-radius: 0 0 50% 50%;
+  }
+
+  .hero-title {
+    position: absolute;
+    bottom: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 100%;
+    animation: fadeIn 1s ease 1s both;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .wordmark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 10vw, 8rem);
+    letter-spacing: 0.25em;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    color: var(--gold);
+    letter-spacing: 0.3em;
+    margin-top: 0.5rem;
+  }
+
+  .scroll-cue {
+    position: absolute;
+    bottom: 4%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: fadeIn 1s ease 2s both;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollDrop 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollDrop {
+    0%, 100% { opacity: 0; transform: scaleY(0); transform-origin: top; }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  /* SECTIONS */
+  section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 8vw;
+    position: relative;
+  }
+
+  .divider {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin: 2rem 0;
+    opacity: 0.6;
+  }
+
+  /* SECTION 1: Form */
+  .s-form {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .s-form::before {
+    content: '01';
+    position: absolute;
+    top: 8vw;
+    right: 8vw;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20vw;
+    color: var(--dim);
+    line-height: 1;
+    user-select: none;
+  }
+
+  .s-material { flex-direction: row; justify-content: space-between; align-items: center; }
+  .s-material::before {
+    content: '02';
+    position: absolute;
+    top: 8vw;
+    left: 8vw;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20vw;
+    color: var(--dim);
+    line-height: 1;
+    user-select: none;
+  }
+
+  .s-color { flex-direction: column; align-items: flex-end; text-align: right; }
+  .s-color::before {
+    content: '03';
+    position: absolute;
+    bottom: 8vw;
+    left: 8vw;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20vw;
+    color: var(--dim);
+    line-height: 1;
+    user-select: none;
+  }
+
+  .s-final { flex-direction: column; align-items: center; text-align: center; justify-content: center; background: #080603; }
+
+  .section-label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(2.5rem, 5vw, 5rem);
+    line-height: 1.1;
+    max-width: 600px;
+  }
+
+  h2 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  p.body {
+    font-size: clamp(0.8rem, 1.5vw, 1rem);
+    line-height: 1.9;
+    color: #8a8070;
+    max-width: 480px;
+    margin-top: 1.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* MATERIAL SWATCHES */
+  .swatch-grid {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .swatch {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+
+  .swatch:hover { transform: scale(1.08); }
+
+  .swatch::after {
+    content: attr(data-label);
+    position: absolute;
+    bottom: 6px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.5);
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  .swatch-obsidian { background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 50%, #2a2520 100%); }
+  .swatch-dusk     { background: linear-gradient(135deg, #1a1520 0%, #0d0a14 50%, #251a30 100%); }
+  .swatch-sand     { background: linear-gradient(135deg, #2a2218 0%, #1a1610 50%, #352a1e 100%); }
+  .swatch-ash      { background: linear-gradient(135deg, #1e1e1e 0%, #151515 50%, #262626 100%); }
+
+  /* COLOR STRIPS */
+  .color-story {
+    display: flex;
+    gap: 0;
+    height: 240px;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 3rem;
+    width: 100%;
+    max-width: 700px;
+    align-self: flex-end;
+  }
+
+  .strip {
+    flex: 1;
+    position: relative;
+    transition: flex 0.5s ease;
+    cursor: pointer;
+  }
+
+  .strip:hover { flex: 3; }
+
+  .strip::after {
+    content: attr(data-name);
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .strip:hover::after { opacity: 1; }
+
+  .c1 { background: linear-gradient(to bottom, #111, #050505); }
+  .c2 { background: linear-gradient(to bottom, #1a1318, #0d080c); }
+  .c3 { background: linear-gradient(to bottom, #18150e, #0c0a06); }
+  .c4 { background: linear-gradient(to bottom, #141414, #0a0a0a); }
+
+  /* FINAL */
+  .price-tag {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 12vw, 10rem);
+    color: var(--white);
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin: 2rem 0;
+  }
+
+  .price-tag span {
+    color: var(--gold);
+  }
+
+  .cta-row {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .btn {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    padding: 1rem 3rem;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--black);
+    border: 1px solid var(--gold);
+  }
+  .btn-primary:hover {
+    background: transparent;
+    color: var(--gold);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid #333;
+  }
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  /* REVEAL on scroll */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    mix-blend-mode: normal;
+    background: linear-gradient(to bottom, rgba(5,5,5,0.9), transparent);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.3em;
+    font-size: 1.1rem;
+    color: var(--white);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 3rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  /* HORIZONTAL RULE */
+  .hr {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #222, transparent);
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1.5rem 2rem; }
+    .nav-links { display: none; }
+    section { padding: 15vw 6vw; }
+    .s-material { flex-direction: column; }
+    .color-story { max-width: 100%; }
+  }
+</style>
 </head>
 <body>
-    <h1>Simple Pong Game</h1>
-    <canvas id="pong" width="800" height="500"></canvas>
-    <script src="pong.js"></script>
+
+<div class="noise"></div>
+
+<nav>
+  <div class="nav-logo">Obsidian</div>
+  <ul class="nav-links">
+    <li><a href="#form">Form</a></li>
+    <li><a href="#material">Material</a></li>
+    <li><a href="#color">Colour</a></li>
+    <li><a href="#acquire">Acquire</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="screen-glow"></div>
+      </div>
+      <div class="phone-notch"></div>
+      <div class="phone-button"></div>
+      <div class="phone-button-vol"></div>
+      <div class="phone-button-vol2"></div>
+    </div>
+    <div class="phone-reflection"></div>
+  </div>
+
+  <div class="hero-title">
+    <div class="wordmark">Obsidian</div>
+    <div class="tagline">Form Follows Feeling</div>
+  </div>
+
+  <div class="scroll-cue">
+    <div class="scroll-line"></div>
+  </div>
+</div>
+
+<div class="hr"></div>
+
+<!-- SECTION 1: Form -->
+<section class="s-form" id="form">
+  <div class="reveal">
+    <div class="section-label">I — Form</div>
+    <h2>Geometry so <em>considered</em>, you'll reach for it just to hold it.</h2>
+    <div class="divider"></div>
+    <p class="body">Every radius is intentional. Every surface tension is calculated. Obsidian does not copy the category — it quietly redefines what a rectangle can feel like when it lives in your hand. Tapered edges that vanish. Corners that meet the light at angles we spent two years getting right.</p>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<!-- SECTION 2: Material -->
+<section class="s-material" id="material">
+  <div class="reveal">
+    <div class="section-label">II — Material</div>
+    <h2>Cold-forged volcanic glass,<br><em>set in aerospace alloy.</em></h2>
+    <div class="divider"></div>
+    <p class="body">The name is not metaphor. The rear panel is formed from a proprietary crystalline glass process that renders the surface with the deep, non-reflective stillness of volcanic stone. It doesn't gleam. It absorbs light. It invites touch. Set against a frame milled from a single billet of 7000-series aluminium, this is not a manufactured object — it is a found object, refined.</p>
+    <div class="swatch-grid" style="margin-top:2rem;">
+      <div class="swatch swatch-obsidian" data-label="Obsidian"></div>
+      <div class="swatch swatch-dusk" data-label="Dusk"></div>
+      <div class="swatch swatch-sand" data-label="Sand"></div>
+      <div class="swatch swatch-ash" data-label="Ash"></div>
+    </div>
+  </div>
+
+  <!-- second phone mockup, rotated -->
+  <div class="reveal" style="flex-shrink:0; margin-left: 4rem;">
+    <div class="phone" style="width:90px; height:185px; transform: rotate(-8deg); border-radius:22px;">
+      <div class="phone-screen" style="border-radius:17px;">
+        <div class="screen-glow"></div>
+      </div>
+      <div class="phone-notch" style="width:26px; height:3px; top:8px;"></div>
+    </div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<!-- SECTION 3: Colour -->
+<section class="s-color" id="color">
+  <div class="reveal" style="max-width:600px;">
+    <div class="section-label">III — Colour</div>
+    <h2>Colours chosen by a <em>painter.</em><br>Not a focus group.</h2>
+    <div class="divider" style="margin-left:auto; margin-right:0;"></div>
+    <p class="body">Each colourway is a complete emotional statement. Obsidian (the deepest black we have ever seen in glass). Dusk (a near-invisible violet that only reveals itself in certain light). Sand (warm, quiet, like dried earth after rain). And Ash — for those who want nothing between them and the object itself.</p>
+  </div>
+
+  <div class="color-story reveal">
+    <div class="strip c1" data-name="Obsidian"></div>
+    <div class="strip c2" data-name="Dusk"></div>
+    <div class="strip c3" data-name="Sand"></div>
+    <div class="strip c4" data-name="Ash"></div>
+  </div>
+</section>
+
+<div class="hr"></div>
+
+<!-- SECTION 4: Acquire -->
+<section class="s-final" id="acquire">
+  <div class="reveal">
+    <div class="section-label">Acquire</div>
+    <h2 style="max-width:none; font-size:clamp(1.5rem, 3vw, 2.5rem);">Some objects justify themselves<br>the moment you see them.</h2>
+    <div class="price-tag"><span>$</span>1,299</div>
+    <p class="body" style="margin:0 auto; text-align:center; max-width:360px;">Available in all four finishes. Comes in a single box made of uncoated grey board. No plastic. No noise. Just the phone.</p>
+    <div class="cta-row">
+      <a href="#" class="btn btn-primary">Reserve Yours</a>
+      <a href="#" class="btn btn-secondary">View Finishes</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 100);
+      }
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(r => observer.observe(r));
+</script>
 </body>
 </html>
